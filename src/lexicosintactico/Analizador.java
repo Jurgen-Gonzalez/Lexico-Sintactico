@@ -1,7 +1,6 @@
 package lexicosintactico;
 
 import datos.AnalizadorDeGramatica;
-import java.util.Stack;
 
 public class Analizador {
     private final int tabla[][] = {
@@ -17,12 +16,7 @@ public class Analizador {
         };
     private int i;
     private String zote;
-    private Lexema tipo;
     private AnalizadorDeGramatica ag; 
-    
-    public enum Lexema{
-        TERMINAL, NOTERMINAL;
-    }
     
     public Analizador(String zote){
         this.zote = zote;
@@ -61,10 +55,8 @@ public class Analizador {
                     break;
                 case 2: 
                     if(isInArray(lexema, ag.getNoTerminales())){
-                        tipo = Lexema.NOTERMINAL;
                         return lexema;
                     }else if(isInArray(lexema, ag.getTerminales())){
-                        tipo = Lexema.TERMINAL;
                         return lexema;
                     }
                     else{
@@ -79,7 +71,7 @@ public class Analizador {
     }
     
     private void LLDriver(){
-        Stack<String> pila = new Stack<>();
+        Pila pila = new Pila();
         
         pila.push(ag.getDerivaciones()[0]);
         String x = pila.peek();
@@ -87,14 +79,16 @@ public class Analizador {
         
         while(!pila.empty()){
             System.out.println("x = "+x+ ", a = "+a);
-            System.out.println(pila.toString());
+            pila.showStack();
             if(isInArray(x, ag.getNoTerminales())){
                 System.out.println(getRow(x)+", "+getColumn(a));
                 if(tabla[getRow(x)][getColumn(a)] != 0){
                     pila.pop();
+                    
                     String[] aux = ag.getDerivaciones()[tabla[getRow(x)][getColumn(a)]-1].split(" ");
                     for (int i = aux.length - 1; i >= 0; i--) {
-                        pila.push(aux[i]);
+                        if(aux[i] != "")
+                            pila.push(aux[i]);
                     }
                 }
                 else {
@@ -114,6 +108,9 @@ public class Analizador {
             }
             x = pila.peek();
         }
+        
+        System.out.println("------------------------------------------");
+        System.out.println("CADENA CORRECTA");
     }
     
     private int getRow(String x){
@@ -131,7 +128,7 @@ public class Analizador {
             if(terminales[j].equals(a))
                 return j;
         }
-        return 0; //imposible llegar aqui
+        return 0;
     }
     
     private boolean esAlfa(char c) {

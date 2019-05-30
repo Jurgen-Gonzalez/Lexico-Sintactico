@@ -22,31 +22,23 @@ public class AnalizadorDeGramatica {
             int length = 0, derivacionesLength = 0;
             while(( line = bf.readLine()) != null){
                 length++;
-                if(line.split("->").length > 1)
-                    derivacionesLength++;
+//                if(line.split("->").length > 1)
+//                    derivacionesLength++;
             }
             
             bf = new BufferedReader(new FileReader("src/datos/Gramatica.txt"));
         
         
             producciones = new String[length];
-            derivaciones = new String[derivacionesLength];//parte derecha
+            derivaciones = new String[length];//parte derecha
             String [] derivantes = new String[length]; //parte izquierda
             for(int i = 0;(line = bf.readLine()) != null; i++){
                 producciones[i] = line;
                 derivantes[i] = line.split("->")[0];
-            }
-            
-            bf = new BufferedReader(new FileReader("src/datos/Gramatica.txt"));
-            int k = 0;
-            for (int i = 0; i < length; i++) {
-                line = bf.readLine();
                 if(line.split("->").length > 1){
-                    derivaciones[k] = line.split("->")[1];
-                    k++;
-                }
+                    derivaciones[i] = line.split("->")[1];
+                }else derivaciones[i] = "";
             }
-            
             
             Set<String> noTerminalesSet = new LinkedHashSet<String>();
             for (int i = 0; i < derivantes.length; i++) {

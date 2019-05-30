@@ -16,11 +16,6 @@ public class LexicoSintactico {
         
         Analizador a = new Analizador(zote);
         a.comenzar();
-//        AnalizadorDeGramatica ag = new AnalizadorDeGramatica();
-//        ag.analizar();
-//        for (String s : ag.getTerminales()) {
-//            System.out.println(s);
-//        }
     }
     
 }
