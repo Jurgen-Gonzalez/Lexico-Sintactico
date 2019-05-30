@@ -32,9 +32,10 @@ public class Analizador {
     
     public void comenzar(){
         ag.analizar();
+        LLDriver();
     }
     
-    public String scanner() {
+    private String scanner() {
         int estado = 0;
         String lexema = "";
 
@@ -66,12 +67,18 @@ public class Analizador {
                         tipo = Lexema.TERMINAL;
                         return lexema;
                     }
+                    else{
+                        System.out.println("ERROR!!! (lexico) en el lexema = " +lexema);
+                        System.exit(0);
+                    }
+                    break;
 
             }
         }
+        return lexema;
     }
     
-    public void LLDriver(){
+    private void LLDriver(){
         Stack<String> pila = new Stack<>();
         
         pila.push(ag.getDerivaciones()[0]);
@@ -79,15 +86,20 @@ public class Analizador {
         String a = scanner();
         
         while(!pila.empty()){
+            System.out.println("x = "+x+ ", a = "+a);
+            System.out.println(pila.toString());
             if(isInArray(x, ag.getNoTerminales())){
+                System.out.println(getRow(x)+", "+getColumn(a));
                 if(tabla[getRow(x)][getColumn(a)] != 0){
                     pila.pop();
-                    for (int j = 0; j < ag.getDerivaciones().length; j++) {
-                        pila.push(ag.getDerivaciones()[j]);
+                    String[] aux = ag.getDerivaciones()[tabla[getRow(x)][getColumn(a)]-1].split(" ");
+                    for (int i = aux.length - 1; i >= 0; i--) {
+                        pila.push(aux[i]);
                     }
                 }
                 else {
-                    System.out.println("ERROR!!!!! (de sintaxis)");
+                    System.out.println("ERROR!!!!! (de sintaxis) en x = "+x+" y a = "+a);
+                    System.exit(0);
                 }
             }
             else {
@@ -95,8 +107,12 @@ public class Analizador {
                     pila.pop();
                     a = scanner();
                 }
-                else System.out.println("ERROR!!!!! (de sintaxis)");
+                else {
+                    System.out.println("ERROR!!!!! (de sintaxis) en x = "+x+" y a = "+a);
+                    System.exit(0);
+                }
             }
+            x = pila.peek();
         }
     }
     
